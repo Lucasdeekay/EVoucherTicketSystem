@@ -1,0 +1,28 @@
+{% extends 'auth.html' %}
+
+{% load static %}
+
+{% block content %}
+<h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
+<form class="forms-sample" method="post" action="">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="username" class="form-label">Matric Number</label>
+        <input type="text" name="username" class="form-control" id="username" required placeholder="Matric Number">
+    </div>
+    <div class="mb-3">
+        <label for="userPassword" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="userPassword" required
+               autocomplete="current-password" placeholder="Password">
+    </div>
+    <a href="{% url 'forgot_password' %}" class="d-block my-3 text-muted">Forgot Password?</a>
+    <div>
+        <button type="submit"
+                class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="send"></i>
+            Login
+        </button>
+    </div>
+    <a href="{% url 'register' %}" class="d-block mt-3 text-muted">Not a user? Sign up</a>
+</form>
+{% endblock content %}

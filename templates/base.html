@@ -1,0 +1,153 @@
+﻿<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>E-Voucher Ticket System</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="../../../css2?family=Roboto:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+    <!-- End fonts -->
+
+    <!-- core:css -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/core/core.css' %}">
+    <!-- endinject -->
+
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="{% static 'assets/vendors/flatpickr/flatpickr.min.css' %}">
+    <!-- End plugin css for this page -->
+
+    <!-- inject:css -->
+    <link rel="stylesheet" href="{% static 'assets/fonts/feather-font/css/iconfont.css' %}">
+    <link rel="stylesheet" href="{% static 'assets/vendors/flag-icon-css/css/flag-icon.min.css' %}">
+    <!-- endinject -->
+
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="{% static 'assets/css/demo1/style.min.css' %}">
+    <!-- End layout styles -->
+
+    <link rel="shortcut icon" href="{% static 'assets/images/logo.png' %}">
+</head>
+<body class="sidebar-dark">
+<div class="main-wrapper">
+
+    <!-- partial:partials/_sidebar.html -->
+    <nav class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="sidebar-brand">
+                <small>DU</small><span> <small>E-VOUCHER</small></span>
+            </a>
+            <div class="sidebar-toggler not-active">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+        <div class="sidebar-body">
+            <ul class="nav">
+                <li class="nav-item nav-category">Main</li>
+                <li class="nav-item">
+                    <a href="{% url 'change_password' %}" class="nav-link">
+                        <i class="link-icon" data-feather="box"></i>
+                        <span class="link-title">Dashboard</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'initiate_voucher_payment' %}">
+                        <i class="link-icon" data-feather="mail"></i>
+                        <span class="link-title">Purchase Voucher</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'change_password' %}">
+                        <i class="link-icon" data-feather="edit"></i>
+                        <span class="link-title">Settings</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <!-- partial -->
+
+    <div class="page-wrapper">
+        <!-- partial:partials/_navbar.html -->
+        <nav class="navbar">
+            <a href="#" class="sidebar-toggler">
+                <i data-feather="menu"></i>
+            </a>
+            <div class="navbar-content">
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                           data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <img class="wd-30 ht-30 rounded-circle" src="{% static 'assets/images/avatar.png' %}"
+                                 alt="profile">
+                        </a>
+                        <div class="dropdown-menu p-0" aria-labelledby="profileDropdown">
+                            <div class="d-flex flex-column align-items-center border-bottom px-5 py-3">
+                                <div class="mb-3">
+                                    <img class="wd-80 ht-80 rounded-circle"
+                                         src="{% static 'assets/images/avatar.png' %}"
+                                         alt="">
+                                </div>
+                                <div class="text-center">
+                                    <p class="tx-16 fw-bolder">Amiah Burton</p>
+                                    <p class="tx-12 text-muted">amiahburton@gmail.com</p>
+                                </div>
+                            </div>
+                            <ul class="list-unstyled p-1">
+                                <li class="dropdown-item py-2">
+                                    <a href="{% url 'logout' %}" class="text-body ms-0">
+                                        <i class="me-2 icon-md" data-feather="log-out"></i>
+                                        <span>Log Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+        <!-- partial -->
+
+        <div class="page-content">
+
+            {% block content %}
+            {% endblock content %}
+
+        </div>
+
+        <!-- partial:partials/_footer.html -->
+        <footer class="footer d-flex flex-column flex-md-row align-items-center justify-content-between px-4 py-3 border-top small">
+            <p class="text-muted mb-1 mb-md-0">Copyright © 2024 <a href="#">Dominion University</a>.
+            </p>
+        </footer>
+        <!-- partial -->
+
+    </div>
+</div>
+
+<!-- core:js -->
+<script src="{% static 'assets/vendors/core/core.js' %}"></script>
+<!-- endinject -->
+
+<!-- Plugin js for this page -->
+<script src="{% static 'assets/vendors/flatpickr/flatpickr.min.js' %}"></script>
+<script src="{% static 'assets/vendors/apexcharts/apexcharts.min.js' %}"></script>
+<!-- End plugin js for this page -->
+
+<!-- inject:js -->
+<script src="{% static 'assets/vendors/feather-icons/feather.min.js' %}"></script>
+<!-- endinject -->
+<script src="{% static 'assets/js/template.js' %}"></script>
+
+<!-- Custom js for this page -->
+<script src="{% static 'assets/js/dashboard-light.js' %}"></script>
+<!-- End custom js for this page -->
+
+</body>
+</html>    

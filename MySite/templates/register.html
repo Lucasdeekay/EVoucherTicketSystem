@@ -1,0 +1,44 @@
+{% extends 'auth.html' %}
+
+{% load static %}
+
+{% block content %}
+<h5 class="text-muted fw-normal mb-4">Create a free account! Sign up now.</h5>
+<form class="forms-sample" method="post" action="">
+    {% csrf_token %}
+    <div class="mb-3">
+        <label for="first_name" class="form-label">First Name</label>
+        <input type="text" name="first_name" class="form-control" id="first_name" required placeholder="First Name">
+    </div>
+    <div class="mb-3">
+        <label for="last_name" class="form-label">First Name</label>
+        <input type="text" name="last_name" class="form-control" id="last_name" required placeholder="Last Name">
+    </div>
+    <div class="mb-3">
+        <label for="email" class="form-label">Matric Number</label>
+        <input type="email" name="email" class="form-control" id="email" required placeholder="Matric Number">
+    </div>
+    <div class="mb-3">
+        <label for="matric_number" class="form-label">Email</label>
+        <input type="text" name="matric_number" class="form-control" id="matric_number" required placeholder="Email">
+    </div>
+    <div class="mb-3">
+        <label for="userPassword" class="form-label">Password</label>
+        <input type="password" name="password" class="form-control" id="userPassword" required
+               autocomplete="current-password" placeholder="Password">
+    </div>
+    <div class="mb-3">
+        <label for="confirm_password" class="form-label">Password</label>
+        <input type="password" name="confirm_password" class="form-control" id="confirm_password" required
+               autocomplete="current-password" placeholder="Confirm Password">
+    </div>
+    <div>
+        <button type="submit"
+                class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="send"></i>
+            Login
+        </button>
+    </div>
+    <a href="{% url 'login' %}" class="d-block mt-3 text-muted">Already a user? Sign in</a>
+</form>
+{% endblock content %}

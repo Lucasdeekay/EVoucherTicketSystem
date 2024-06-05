@@ -40,8 +40,8 @@ urlpatterns = [
     path('', include('MySite.urls')),  # Replace with your app URL path
     path('swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-
-    # Conditional inclusion of media and static URL patterns (based on DEBUG)
-    static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) if settings.DEBUG else [],
-    static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT) if settings.DEBUG else [],
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
