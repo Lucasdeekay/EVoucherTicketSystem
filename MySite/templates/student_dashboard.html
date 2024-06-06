@@ -10,6 +10,12 @@
     </div>
 </div>
 
+<div id="toast">
+    {% for message in messages %}
+    <div class="alert alert-info" role="alert"><strong></strong><i>{{ message }}</i></div>
+    {% endfor %}
+</div>
+
 {% for event in events %}
 <div class="row">
     <div>
