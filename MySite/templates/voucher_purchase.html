@@ -19,6 +19,11 @@
 
                 <form class="forms-sample">
                     {% csrf_token %}
+                    <div id="toast">
+                        {% for message in messages %}
+                        <div class="alert alert-info" role="alert"><strong></strong><i>{{ message }}</i></div>
+                        {% endfor %}
+                    </div>
                     <label for="event" class="form-label">Description</label>
                     <select class="form-control" name="event_id" id="event" required>
                         <option>Select Description</option>

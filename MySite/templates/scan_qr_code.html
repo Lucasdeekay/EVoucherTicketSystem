@@ -1,0 +1,95 @@
+{% extends 'auth.html' %}
+
+{% load static %}
+
+{% block content %}
+<h3 class="text-muted fw-normal mb-4">Voucher Scanner</h3>
+<form class="forms-sample" method="post" action="" id="form">
+    {% csrf_token %}
+    <div id="toast">
+    </div>
+    <div class="mb-3">
+        <label for="event" class="form-label">Description</label>
+        <select class="form-control" name="event_id" id="event" required>
+            <option>Select Description</option>
+            {% for e in events %}
+            <option value="{{ e.id }}">{{ e.name }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div class="row">
+        <div class="col-xl-12 col-md-6">
+            <div class="card h-auto">
+                <div class="card-header pb-0 border-0">
+                    <h4 class="heading mb-0">Camera</h4>
+                </div>
+                <div class="card-body" style="position: relative;">
+                    <div id="video" class="project-chart" style="min-height: 100px;">
+                        <video id="preview" width="100%"></video>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <button type="submit"
+                class="btn btn-outline-primary btn-icon-text mb-2 mb-md-0">
+            <i class="btn-icon-prepend" data-feather="camera"></i>
+            Click To Scan
+        </button>
+    </div>
+</form>
+{% endblock content %}
+
+{% block ajax %}
+document.getElementById('form').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    $("#video").hide();
+
+    let scanner = new Instascan.Scanner({
+        video: document.getElementById('preview'),
+        mirror: false
+    });
+
+    Instascan.Camera.getCameras().then(function(cameras) {
+
+        if (cameras.length > 0) {
+            $("#video").show();
+            scanner.start(cameras[0]);
+        } else {
+            alert('No cameras found.');
+        }
+    }).catch(function(e) {
+        alert(e);
+    });
+
+    scanner.addListener('scan', function(content) {
+        $.ajax({
+            type: 'POST',
+            url: "{% url 'scan_qr_code' %}",
+            data:{
+                event_id: $('#event').val,
+                unique_identifier: content,
+                csrfmiddlewaretoken: $("input[name=csrfmiddlewaretoken]").val()
+            },
+            success: function(data){
+                $("#toast").empty();
+                temp = `<div class="alert alert-info" role="alert"><strong></strong><i>${data.message}</i></div>`;
+                $("#toast").append(temp);
+                $("#toast").fadeIn(3000);
+                $("#toast").fadeOut(3000);
+            },
+            error: function(data){
+                $("#toast").empty();
+                temp = `<div class="alert alert-info" role="alert"><strong></strong><i>${data.message}</i></div>`;
+                $("#toast").append(temp);
+                $("#toast").fadeIn(3000);
+                $("#toast").fadeOut(3000);
+            },
+        });
+    });
+
+});
+
+{% endblock ajax %}

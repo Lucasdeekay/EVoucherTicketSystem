@@ -31,6 +31,13 @@
     <!-- End layout styles -->
 
     <link rel="shortcut icon" href="{% static 'assets/images/logo.png' %}">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/6.1.4/adapter.min.js" integrity="sha512-FZkQmTcqSzV2aNpWszYA/pPUISx6QjI60lKGwnIsfNFCGqUB7gcobQ9StH3hQCKFN92md3fCaXLzzSpoFat57A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/3.2.47/vue.cjs.min.js" integrity="sha512-GAZdoqaWBVt41E9aFD6m/Ng1bttD+LdVCMKIZ9CK9NrGvElI6RzUlAtoV+Yew+s1oOSOwZFUSiGSOwhXMTINsQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+
+    <!--  jQuer cdn  -->
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 <body class="sidebar-dark">
 <div class="main-wrapper">
@@ -70,6 +77,17 @@
 <script src="{% static 'assets/vendors/feather-icons/feather.min.js' %}"></script>
 <!-- endinject -->
 <script src="{% static 'assets/js/template.js' %}"></script>
+
+<script>
+$(function(){
+
+    $("#toast").fadeIn(5000);
+    $("#toast").fadeOut(5000);
+
+    {% block ajax %}
+    {% endblock ajax %}
+})
+</script>
 
 </body>
 </html>

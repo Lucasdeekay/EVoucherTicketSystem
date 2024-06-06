@@ -5,6 +5,11 @@
 {% block content %}
 <h5 class="text-muted fw-normal mb-4">Create a free account! Sign up now.</h5>
 <form class="forms-sample" method="post" action="">
+    <div id="toast">
+        {% for message in messages %}
+        <div class="alert alert-info" role="alert"><strong></strong><i>{{ message }}</i></div>
+        {% endfor %}
+    </div>
     {% csrf_token %}
     <div class="mb-3">
         <label for="first_name" class="form-label">First Name</label>

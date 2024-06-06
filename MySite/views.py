@@ -139,7 +139,7 @@ def logout_view(request):
 @login_required
 def student_dashboard(request):
     # Get the currently logged-in student
-    student = request.user.student
+    student = Student.objects.get(user=request.user)
 
     # Filter unused vouchers for the student
     unused_vouchers = EVoucher.objects.filter(student=student, status='UNUSED')
@@ -181,8 +181,10 @@ def initiate_voucher_payment(request):
         else:
             return JsonResponse(response)
 
+    # Get the currently logged-in student
+    student = Student.objects.get(user=request.user)
     events = Event.objects.all()
-    return render(request, 'voucher_purchase.html', context={'events': events})
+    return render(request, 'voucher_purchase.html', context={'events': events, 'student': student})
 
 
 @login_required
@@ -278,7 +280,8 @@ def download_voucher_image(request, voucher_id):
     voucher = get_object_or_404(EVoucher, id=voucher_id, student__user=request.user)
 
     if not voucher.image:
-        raise Http404("Voucher image not found")
+        messages.error(request, "Voucher image not found")
+        return redirect('student_dashboard')
 
     response = HttpResponse(voucher.image, content_type='image/png')
     response['Content-Disposition'] = f'attachment; filename=voucher_{voucher.unique_identifier}.png'
@@ -288,20 +291,26 @@ def download_voucher_image(request, voucher_id):
 @login_required
 def scan_qr_code(request):
     if request.method == 'POST':
+        event_id = request.POST['event_id']
         unique_identifier = request.FILES['unique_identifier']
 
         try:
+            event = Event.objects.get(id=event_id)
             voucher = EVoucher.objects.get(unique_identifier=unique_identifier)
 
-            if voucher.status == 'UNUSED':
+            if voucher.status == 'USED':
+                return JsonResponse({'message': 'Voucher has already been used'}, status=400)
+            elif voucher.event.name != event.name:
+                return JsonResponse({'message': 'Voucher is not for this purpose'}, status=400)
+            else:
                 voucher.status = 'USED'
                 voucher.save()
                 return JsonResponse({'message': 'Voucher successfully validated and used'})
-            else:
-                return JsonResponse({'error': 'Voucher has already been used'}, status=400)
+
 
         except EVoucher.DoesNotExist:
-            return JsonResponse({'error': 'Invalid QR code'}, status=400)
+            return JsonResponse({'message': 'Invalid QR code'}, status=400)
 
-    return render(request, 'scan_qr_code.html')
+    events = Event.objects.all()
+    return render(request, 'scan_qr_code.html', context={'events': events})
 

@@ -5,6 +5,11 @@
 {% block content %}
 <h5 class="text-muted fw-normal mb-4">Welcome back! Log in to your account.</h5>
 <form class="forms-sample" method="post" action="">
+    <div id="toast">
+        {% for message in messages %}
+        <div class="alert alert-info" role="alert"><strong></strong><i>{{ message }}</i></div>
+        {% endfor %}
+    </div>
     {% csrf_token %}
     <div class="mb-3">
         <label for="username" class="form-label">Matric Number</label>

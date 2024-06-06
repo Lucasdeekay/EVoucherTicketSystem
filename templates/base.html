@@ -31,6 +31,9 @@
     <!-- End layout styles -->
 
     <link rel="shortcut icon" href="{% static 'assets/images/logo.png' %}">
+
+     <!--  jQuer cdn  -->
+	<script src="https://code.jquery.com/jquery-3.6.3.min.js" integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
 </head>
 <body class="sidebar-dark">
 <div class="main-wrapper">
@@ -95,8 +98,8 @@
                                          alt="">
                                 </div>
                                 <div class="text-center">
-                                    <p class="tx-16 fw-bolder">Amiah Burton</p>
-                                    <p class="tx-12 text-muted">amiahburton@gmail.com</p>
+                                    <p class="tx-16 fw-bolder">{{ student.first_name|default:'Amiah'}} {{ student.last_name|default:'Burton'}}</p>
+                                    <p class="tx-12 text-muted">{{ student.email|default:'amiahburton@gmail.com'}}</p>
                                 </div>
                             </div>
                             <ul class="list-unstyled p-1">
@@ -148,6 +151,13 @@
 <!-- Custom js for this page -->
 <script src="{% static 'assets/js/dashboard-light.js' %}"></script>
 <!-- End custom js for this page -->
+
+<script>
+$(function(){
+    $("#toast").fadeIn(5000);
+    $("#toast").fadeOut(5000);
+})
+</script>
 
 </body>
 </html>    

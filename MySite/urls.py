@@ -21,6 +21,6 @@ urlpatterns = [
     path('initiate-payment/', views.initiate_voucher_payment, name='initiate_voucher_payment'),
     path('verify-payment/', views.verify_voucher_payment, name='verify_voucher_payment'),
     path('download-voucher/<int:voucher_id>/', views.download_voucher_image, name='download_voucher_image'),
-    path('scan-qr-code/', views.scan_qr_code, name='scan_qr_code'),
+    path('scan/', views.scan_qr_code, name='scan_qr_code'),
     path('api/', include(router.urls)),
 ]
