@@ -161,7 +161,7 @@ def initiate_voucher_payment(request):
         quantity = request.POST['quantity']
 
         event = Event.objects.get(id=event_id)
-        total_amount = event.price * quantity * 100  # Convert to kobo
+        total_amount = float(event.price) * int(quantity) * 100  # Convert to kobo
         email = request.user.email
 
         # Initialize transaction
@@ -292,7 +292,7 @@ def download_voucher_image(request, voucher_id):
 def scan_qr_code(request):
     if request.method == 'POST':
         event_id = request.POST['event_id']
-        unique_identifier = request.FILES['unique_identifier']
+        unique_identifier = request.POST['unique_identifier']
 
         try:
             event = Event.objects.get(id=event_id)
