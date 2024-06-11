@@ -25,7 +25,7 @@
                         {% endfor %}
                     </div>
                     <label for="event" class="form-label">Description</label>
-                    <select class="form-control" name="event_id" id="event">
+                    <select class="form-control" name="event_id" id="event" required>
                         <option>Select Description</option>
                     {% for e in events %}
                         <option value="{{ e.id }}">{{ e.name }}</option>

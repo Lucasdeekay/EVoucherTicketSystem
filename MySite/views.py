@@ -42,10 +42,7 @@ def register_view(request):
         password = request.POST['password']
         confirm_password = request.POST['confirm_password']
 
-        if Student.objects.filter(matric_number=matric_number).exists or not Student.objects.filter(email=email).exists:
-            messages.error(request, 'User already exists.')
-            return redirect('register')
-        elif password != confirm_password:
+        if password != confirm_password:
             messages.error(request, 'Password does not match.')
             return redirect('register')
         else:
@@ -71,25 +68,24 @@ def register_view(request):
 
 def forgot_password_view(request):
     if request.method == 'POST':
-        email = request.POST['email']
+        email = request.POST['email'].strip()
         try:
-            student = Student.objects.get(email=email)
-            current_site = get_current_site(request)
-            mail_subject = 'Password reset instructions'
-            message = render_to_string('forgot_password_email.html', {
-                'student': student.id,
-                'domain': current_site.domain,
-            })
-            email_from = None  # Replace with your email address
-            email_to = student.email
-            send_mail(mail_subject, message, email_from, [email_to])
-            messages.success(request, 'A password reset link has been sent to your email.')
-            return redirect('login')
-        except User.DoesNotExist:
-            messages.success(request, 'Email address not found.')
+            user = User.objects.get(email=email)
+            # Construct reset password URL with the user ID and token
+            reset_password_url = f"http://your_domain/reset-password/{user.id}"
+            # Send email with reset password link
+            send_mail(
+                subject='Password Reset Link',
+                message=f'Click the link below to reset your password:\n{reset_password_url}',
+                from_email='your_email@example.com',  # Replace with your email address
+                recipient_list=[email],
+            )
+            messages.success(request, 'We sent you an email with instructions to reset your password.')
             return redirect('forgot_password')
-    else:
-        return render(request, 'forgot_password.html')
+        except User.DoesNotExist:
+            messages.error(request, 'Email address not found.')
+            return redirect('forgot_password')
+    return render(request, 'forgot_password.html')
 
 
 def retrieve_password_view(request, reset_uid):
@@ -161,13 +157,13 @@ def initiate_voucher_payment(request):
         quantity = request.POST['quantity']
 
         event = Event.objects.get(id=event_id)
-        total_amount = float(event.price) * int(quantity) * 100  # Convert to kobo
-        email = request.user.email
+        total_amount = float(event.price) * int(quantity)  # Convert to kobo
+        email = Student.objects.get(user=request.user).email
 
         # Initialize transaction
         response = Transaction.initialize(
             reference=str(uuid.uuid4()),
-            amount=total_amount,
+            amount=total_amount * 100,
             email=email
         )
 
@@ -177,32 +173,11 @@ def initiate_voucher_payment(request):
             request.session['quantity'] = quantity
             request.session['transaction_reference'] = response['data']['reference']
 
-            return redirect(response['data']['authorization_url'])
-        else:
-            return JsonResponse(response)
-
-    # Get the currently logged-in student
-    student = Student.objects.get(user=request.user)
-    events = Event.objects.all()
-    return render(request, 'voucher_purchase.html', context={'events': events, 'student': student})
-
-
-@login_required
-def verify_voucher_payment(request):
-    reference = request.GET.get('reference')
-    transaction_reference = request.session.get('transaction_reference')
-
-    if reference and transaction_reference and reference == transaction_reference:
-        response = Transaction.verify(reference)
-
-        if response['status'] and response['data']['status'] == 'success':
-            event_id = request.session.get('event_id')
-            quantity = request.session.get('quantity')
             event = get_object_or_404(Event, id=event_id)
             student = get_object_or_404(Student, user=request.user)
 
             # Create vouchers and save payment information
-            for _ in range(quantity):
+            for _ in range(int(quantity)):
                 unique_identifier = str(uuid.uuid4())
 
                 # Generate QR code
@@ -210,7 +185,7 @@ def verify_voucher_payment(request):
                     version=1,
                     error_correction=qrcode.constants.ERROR_CORRECT_L,
                     box_size=10,
-                    border=4,
+                    border=2,
                 )
                 qr.add_data(unique_identifier)
                 qr.make(fit=True)
@@ -222,7 +197,7 @@ def verify_voucher_payment(request):
 
                 # Create card template
                 card_width, card_height = 400, 200
-                card = Image.new('RGB', (card_width, card_height), 'white')
+                card = Image.new('RGB', (card_width, card_height), 'purple')
                 draw = ImageDraw.Draw(card)
 
                 # Load a font
@@ -233,13 +208,23 @@ def verify_voucher_payment(request):
 
                 # Draw text
                 text = f"{student.first_name} {student.last_name}"
-                text_width, text_height = draw.textsize(text, font=font)
-                draw.text(((card_width - text_width) / 2, 20), text, font=font, fill='black')
+                text_width = 50
+                draw.text((30, 30), text, font=font, fill='white')
+
+                # Draw text
+                text = f"{event.name}"
+                text_width = 50
+                draw.text((30, 80), text, font=font, fill='white')
+
+                # Draw text
+                text = f"#{event.price}"
+                text_width = 50
+                draw.text((30, 130), text, font=font, fill='white')
 
                 # Paste QR code
                 qr_code_image = Image.open(qr_code_data)
                 qr_code_image = qr_code_image.resize((150, 150))
-                card.paste(qr_code_image, ((card_width - 150) // 2, 50))
+                card.paste(qr_code_image, (200, 20))
 
                 # Save the card as an image
                 card_data = io.BytesIO()
@@ -263,11 +248,29 @@ def verify_voucher_payment(request):
 
                 Payment.objects.create(
                     voucher=voucher,
-                    transaction_id=reference,
+                    transaction_id=unique_identifier,
                     amount_paid=event.price,
-                    payment_date=response['data']['paid_at']
                 )
 
+            return redirect(response['data']['authorization_url'])
+        else:
+            return JsonResponse(response)
+
+    # Get the currently logged-in student
+    student = Student.objects.get(user=request.user)
+    events = Event.objects.all()
+    return render(request, 'voucher_purchase.html', context={'events': events, 'student': student})
+
+
+@login_required
+def verify_voucher_payment(request):
+    reference = request.GET.get('reference')
+    transaction_reference = request.session.get('transaction_reference')
+
+    if reference and transaction_reference and reference == transaction_reference:
+        response = Transaction.verify(reference)
+
+        if response['status'] and response['data']['status'] == 'success':
             return JsonResponse({'message': 'Payment and voucher creation successful'})
         else:
             return JsonResponse({'message': 'Payment verification failed'})
