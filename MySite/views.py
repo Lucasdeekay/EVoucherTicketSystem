@@ -71,17 +71,7 @@ def forgot_password_view(request):
         email = request.POST['email'].strip()
         try:
             user = User.objects.get(email=email)
-            # Construct reset password URL with the user ID and token
-            reset_password_url = f"http://your_domain/reset-password/{user.id}"
-            # Send email with reset password link
-            send_mail(
-                subject='Password Reset Link',
-                message=f'Click the link below to reset your password:\n{reset_password_url}',
-                from_email='your_email@example.com',  # Replace with your email address
-                recipient_list=[email],
-            )
-            messages.success(request, 'We sent you an email with instructions to reset your password.')
-            return redirect('forgot_password')
+            return redirect('password_reset', args=(user.id,))
         except User.DoesNotExist:
             messages.error(request, 'Email address not found.')
             return redirect('forgot_password')
