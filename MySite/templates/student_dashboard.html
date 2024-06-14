@@ -16,6 +16,36 @@
     {% endfor %}
 </div>
 
+<div class="row mb-3">
+    <div>
+        <h4 class="mb-3 mb-md-3">My Profile</h4>
+        <div class="col-12 col-xl-12 stretch-card" style="background-color:#0c1427; border-radius:10px; border:1px solid #D4AF37;">
+            <div class="row flex-grow-1">
+                <div class="col-md-6 grid-margin text-white">
+                    <div class="m-3">
+                        <h5>Last Name</h5>
+                        <h3>{{ student.last_name }}</h3>
+                    </div>
+                    <div class="m-3">
+                        <h5>First Name</h5>
+                        <h3>{{ student.first_name }}</h3>
+                    </div>
+                </div>
+                <div class="col-md-6 grid-margin text-white">
+                    <div class="m-3">
+                        <h5>Matric No</h5>
+                        <h3>{{ student.matric_number }}</h3>
+                    </div>
+                    <div class="m-3">
+                        <h5>Email</h5>
+                        <h3>{{ student.email }}</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 {% for event in events %}
 <div class="row">
     <div>

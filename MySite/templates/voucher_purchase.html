@@ -42,4 +42,38 @@
         </div>
     </div>
 </div>
+
+<div class="d-flex justify-content-between align-items-center flex-wrap grid-margin">
+    <div>
+        <h4 class="mb-3 mb-md-0">Recent Transactions</h4>
+    </div>
+</div>
+
+<div class="row mt-3">
+    <div class="col-md-12 grid-margin">
+        <table class="table">
+            <tr>
+                <th>Description</th>
+                <th>Transaction ID</th>
+                <th>Amount</th>
+                <th>Date</th>
+            </tr>
+
+            {% if payments %}
+            {% for payment in payments %}
+            <tr>
+                <td>{{ payment.voucher.event.name  }}</td>
+                <td>{{ payment.transaction_id}}</td>
+                <td>#{{ payment.amount_paid }}</td>
+                <td>{{ payment.payment_date }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="4">No available payment records</td>
+            </tr>
+            {% endif %}
+        </table>
+    </div>
+</div>
 {% endblock content %}

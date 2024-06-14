@@ -197,7 +197,7 @@ def initiate_voucher_payment(request):
 
                 # Create card template
                 card_width, card_height = 400, 200
-                card = Image.new('RGB', (card_width, card_height), 'purple')
+                card = Image.new('RGB', (card_width, card_height), '#0c1427')
                 draw = ImageDraw.Draw(card)
 
                 # Load a font
@@ -259,7 +259,8 @@ def initiate_voucher_payment(request):
     # Get the currently logged-in student
     student = Student.objects.get(user=request.user)
     events = Event.objects.all()
-    return render(request, 'voucher_purchase.html', context={'events': events, 'student': student})
+    payments = Payment.objects.all().order_by('-payment_date')
+    return render(request, 'voucher_purchase.html', context={'events': events, 'student': student, 'payments': payments})
 
 
 @login_required
