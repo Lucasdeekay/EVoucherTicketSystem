@@ -148,4 +148,3 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # SECURE_BROWSER_XSS_FILTER = True
 
 
-

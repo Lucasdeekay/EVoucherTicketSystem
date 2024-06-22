@@ -71,25 +71,24 @@ def forgot_password_view(request):
         email = request.POST['email'].strip()
         try:
             user = User.objects.get(email=email)
-            return redirect('password_reset', args=(user.id,))
+            login(request, user)
+            return redirect('password_reset')
         except User.DoesNotExist:
             messages.error(request, 'Email address not found.')
             return redirect('forgot_password')
     return render(request, 'forgot_password.html')
 
 
-def retrieve_password_view(request, reset_uid):
-    try:
-        student = Student.objects.get(pk=reset_uid)
-    except User.DoesNotExist:
-        return redirect('login')  # Redirect to login if user not found
+def retrieve_password_view(request):
+    user = request.user
 
     if request.method == 'POST':
         new_password = request.POST['new_password']
         confirm_password = request.POST['confirm_password']
         if new_password == confirm_password:
-            student.set_password(new_password)
-            student.save()
+            user.set_password(new_password)
+            user.save()
+            logout(request)
             messages.success(request, "Password successfully changed")
             return redirect('login')
         else:
@@ -100,14 +99,14 @@ def retrieve_password_view(request, reset_uid):
 
 @login_required
 def change_password_view(request):
-    student = Student.objects.get(user=request.user)
+    user = request.user
     if request.method == 'POST':
         old_password = request.POST['old_password']
         new_password = request.POST['new_password']
         confirm_password = request.POST['confirm_password']
-        if new_password == confirm_password and student.user.check_password(old_password):
-            student.set_password(new_password)
-            student.save()
+        if new_password == confirm_password and user.check_password(old_password):
+            user.set_password(new_password)
+            user.save()
             messages.success(request, "Password successfully changed")
             return redirect('student_dashboard')
         else:
